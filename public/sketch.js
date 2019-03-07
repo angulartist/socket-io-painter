@@ -2,28 +2,34 @@ let socket
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight)
-  background(51)
+  background(0)
 
   socket = io.connect('http://localhost:3000')
-  socket.on('mouse', doDraw)
-}
 
-function doDraw(point) {
-  noStroke()
-  fill(255, 0, 89)
-  ellipse(point.x, point.y, 36, 36)
+  socket.on(
+    'mouse',
+
+    function(data) {
+      fill(0, 0, 255)
+      noStroke()
+      ellipse(data.x, data.y, 20, 20)
+    }
+  )
 }
 
 function mouseDragged() {
-  const point = {
-    x: mouseX,
-    y: mouseY
-  }
+  fill(255)
+  noStroke()
+  ellipse(mouseX, mouseY, 20, 20)
 
-  socket.emit('mouse', point)
+  sendmouse(mouseX, mouseY)
 }
 
-function draw() {
-  noStroke()
-  ellipse(mouseX, mouseY, 36, 36)
+function sendmouse(xpos, ypos) {
+  const data = {
+    x: xpos,
+    y: ypos
+  }
+
+  socket.emit('mouse', data)
 }
